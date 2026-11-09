@@ -1,0 +1,9 @@
+---
+-hosts:flask
+ gather_facts:yes
+ vars: 
+  student_number:"229237991"
+  image_name:"flask_229237991"
+  container_name:"229237991"
+  host_port:5050
+  build_dir:"/home/devasc/229237991_flask"

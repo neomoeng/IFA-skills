@@ -1,0 +1,39 @@
+---
+-hosts:flask
+ gather_facts:yes
+ vars: 
+  student_number:"229237991"
+  image_name:"flask_229237991"
+  container_name:"229237991"
+  host_port:5050
+  build_dir:"/home/devasc/229237991_flask"
+ tasks:
+ - name: Create Dockerfile
+   copy:
+     dest: '/home/devasc/229237991/Dockerfile'
+     content: |
+       FROM python:3.9-slim
+       WORKDIR /app
+       RUN pip install --no-cache-dir flask
+       COPY ./app.py /app/app.py
+       EXPOSE 5000
+       CMD ["python", "app.py"]
+     mode: '0644'
+  - name: remove existing container if present
+    command: docker rm -f {{container_name}}
+    failed_when: false
+  -name: Run detached container from image
+    command: docker rm -f {{container_name}} -p {{host_port}}:5000 {{image_name}}
+  -name: Test web server response status
+    uri:
+      url:"http://local host:{{host_port}}"
+       status_code:200
+       egister:result
+       etries:5
+       delay:3
+       unti:result.status==200
+  -name: Print url test result status
+    debug:
+      msg:"web server is active and returned status code{result.status}}"
+  
+
